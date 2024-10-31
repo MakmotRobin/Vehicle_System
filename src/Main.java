@@ -1,19 +1,17 @@
 import java.util.ArrayList;
+import java.util.LinkedList;
 
-interface Vehicle{
+interface Vehicle {
     String getLicensePlate();
-
     String getVehicleType();
-
     double getRentalPricePerDay();
-
     void printVehicleDetails();
-
     void printRentedBy();
-
     void rentVehicle(Customer customer) throws Exception;
-
     void returnVehicle(Customer customer) throws Exception;
+    boolean isRented(); // New method to check if the vehicle is rented
+    double calculateTotalRentalPrice(int days); // New method to calculate total rental price
+    void addRentalHistory(Customer customer); // New method to add to rental history
 }
 
 class Customer {
@@ -33,12 +31,14 @@ class Customer {
         return contactNumber;
     }
 }
-//Car implementation of the Vehicle
-abstract class Cari implements Vehicle{
+
+// Car implementation of the Vehicle
+abstract class Cari implements Vehicle {
     protected String licensePlate;
     protected String vehicleType;
     protected double rentalPricePerDay;
     protected ArrayList<Customer> rentedBy;
+    protected LinkedList<Customer> rentalHistory; // To track rental history
     protected int numberOfDoors;
     protected String transmissionType;
 
@@ -47,6 +47,7 @@ abstract class Cari implements Vehicle{
         this.vehicleType = vehicleType;
         this.rentalPricePerDay = rentalPricePerDay;
         this.rentedBy = new ArrayList<>();
+        this.rentalHistory = new LinkedList<>();
         this.numberOfDoors = numberOfDoors;
         this.transmissionType = transmissionType;
     }
@@ -88,9 +89,20 @@ abstract class Cari implements Vehicle{
     }
 
     @Override
+    public boolean isRented() {
+        return !rentedBy.isEmpty(); // Returns true if rented
+    }
+
+    @Override
+    public double calculateTotalRentalPrice(int days) {
+        return rentalPricePerDay * days; // Calculate total rental price
+    }
+
+    @Override
     public void rentVehicle(Customer customer) throws Exception {
         if (rentedBy.isEmpty()) {
             rentedBy.add(customer);
+            addRentalHistory(customer); // Add to rental history
             System.out.println("Vehicle rented successfully to " + customer.getName());
         } else {
             throw new Exception("This vehicle is already rented.");
@@ -106,13 +118,23 @@ abstract class Cari implements Vehicle{
             throw new Exception("This customer has not rented this vehicle.");
         }
     }
+
+    @Override
+    public void addRentalHistory(Customer customer) {
+        if (rentalHistory.size() == 5) {
+            rentalHistory.removeFirst(); // Remove the oldest rental if we have 5
+        }
+        rentalHistory.add(customer); // Add the new rental
+    }
 }
-//Motorcycle implementation of Vehicle
+
+// Motorcycle implementation of Vehicle
 abstract class Motorcycle implements Vehicle {
     protected String licensePlate;
     protected String vehicleType;
     protected double rentalPricePerDay;
     protected ArrayList<Customer> rentedBy;
+    protected LinkedList<Customer> rentalHistory; // To track rental history
     protected int engineCapacity;
 
     public Motorcycle(String licensePlate, String vehicleType, double rentalPricePerDay, int engineCapacity) {
@@ -120,6 +142,7 @@ abstract class Motorcycle implements Vehicle {
         this.vehicleType = vehicleType;
         this.rentalPricePerDay = rentalPricePerDay;
         this.rentedBy = new ArrayList<>();
+        this.rentalHistory = new LinkedList<>();
         this.engineCapacity = engineCapacity;
     }
 
@@ -145,11 +168,11 @@ abstract class Motorcycle implements Vehicle {
         System.out.println("Rental Price Per Day: $" + rentalPricePerDay);
         System.out.println("Engine Capacity: " + engineCapacity);
     }
-    // Renting customers the vehicles
+
     @Override
     public void printRentedBy() {
         if (rentedBy.isEmpty()) {
-            System.out.println("This vehicle is currently not rented.");
+            System.out.println("This vehicle is not rented currently.");
         } else {
             System.out.println("Rented by:");
             for (Customer customer : rentedBy) {
@@ -157,11 +180,22 @@ abstract class Motorcycle implements Vehicle {
             }
         }
     }
-// Renting the vehicle to the customers
+
+    @Override
+    public boolean isRented() {
+        return !rentedBy.isEmpty(); // Returns true if rented
+    }
+
+    @Override
+    public double calculateTotalRentalPrice(int days) {
+        return rentalPricePerDay * days; // Calculate total rental price
+    }
+
     @Override
     public void rentVehicle(Customer customer) throws Exception {
         if (rentedBy.isEmpty()) {
             rentedBy.add(customer);
+            addRentalHistory(customer); // Add to rental history
             System.out.println("Vehicle rented successfully to " + customer.getName());
         } else {
             throw new Exception("This vehicle is already rented.");
@@ -177,10 +211,12 @@ abstract class Motorcycle implements Vehicle {
             throw new Exception("This customer has not rented this vehicle.");
         }
     }
-}
 
-/*
-check if the vehicle is currently free or rented out
-calculate total rental price for the customer
-get a list of max last 5 rentals per vehicle
- */
+    @Override
+    public void addRentalHistory(Customer customer) {
+        if (rentalHistory.size() == 5) {
+            rentalHistory.removeFirst(); // Remove the oldest rental if we have 5
+        }
+        rentalHistory.add(customer); // Add the new rental
+    }
+}
