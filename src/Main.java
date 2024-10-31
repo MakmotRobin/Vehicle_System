@@ -179,16 +179,6 @@ abstract class Motorcycle implements Vehicle {
     }
 }
 
-
-public class Main{
-    public static void main(String[]args){
-        System.out.println("Welcome to the Vehicle Management System");
-        System.out.println("The following are the currently free Vehicles: ");
-    }
-    public class Rented(){
-
-    }
-}
 /*
 check if the vehicle is currently free or rented out
 calculate total rental price for the customer
