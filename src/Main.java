@@ -33,7 +33,7 @@ class Customer {
         return contactNumber;
     }
 }
-
+//Car implementation of the Vehicle
 abstract class Cari implements Vehicle{
     protected String licensePlate;
     protected String vehicleType;
@@ -107,7 +107,7 @@ abstract class Cari implements Vehicle{
         }
     }
 }
-
+//Motorcycle implementation of Vehicle
 abstract class Motorcycle implements Vehicle {
     protected String licensePlate;
     protected String vehicleType;
